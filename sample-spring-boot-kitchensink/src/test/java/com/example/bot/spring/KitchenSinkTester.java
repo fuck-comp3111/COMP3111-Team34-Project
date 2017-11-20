@@ -53,7 +53,7 @@ public class KitchenSinkTester {
 	//private DatabaseEngine databaseEngine;
 	private SQLDatabaseEngine sqldatabaseEngine;
 	
-	
+
 	//Water------------------------------
 	@Test
 	public void testWaterInvalidInput() throws Exception {
@@ -67,6 +67,20 @@ public class KitchenSinkTester {
 		
 		assertThat(!thrown).isEqualTo(false);
 	}
+	@Test
+	public void testWaterUserNotExist() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = this.sqldatabaseEngine.waterInterval("water\n50", "not_exist_user");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo(null);
+	}
+	
 	
 	
 	@Test
@@ -121,6 +135,18 @@ public class KitchenSinkTester {
 
 //-------------Friend
 	@Test
+	public void testFriendUserExistsShorterThan6() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = this.sqldatabaseEngine.friend("small_id");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo("000005");
+	}
 	public void testFriendUserExists() throws Exception {
 		boolean thrown = false;
 		String result = null;
@@ -237,6 +263,19 @@ public class KitchenSinkTester {
 	}
 	
 	@Test
+	public void testGetCouponCountFunctionWrongSQL() throws Exception {
+		boolean thrown = false;
+		int result = 0;
+		try {
+		result = this.sqldatabaseEngine.GetCouponCount("select coupon_count from coupontable where user_id = 'notexist'");
+		}catch (Exception e)
+		{
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result==0).isEqualTo(true);
+	}
+	@Test
 	public void testCodePromotionEnds() throws Exception {
 		boolean thrown = false;
 		String result = null;
@@ -262,6 +301,20 @@ public class KitchenSinkTester {
 		String result = null;
 		try {
 			result = this.sqldatabaseEngine.redeem("no_coupon_user");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).isEqualTo("You currently have no coupon");
+	}
+	
+	@Test
+	public void testRedeemNoUser() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = this.sqldatabaseEngine.redeem("not_exist_user");
 		} catch (Exception e) {
 			thrown = true;
 		}
@@ -298,6 +351,20 @@ public class KitchenSinkTester {
 			
 			assertThat(!thrown).isEqualTo(true);
 			assertThat(result.contains("Total energy intake(for the last 7 days) is")).isEqualTo(true);
+		}  
+		
+		@Test
+		public void testSportsWeightUserNotExist() throws Exception {
+			boolean thrown = false;
+			String result = null;
+			try {
+				result = this.sqldatabaseEngine.sports_amount("user_not_exist");
+			} catch (Exception e) {
+				thrown = true;
+			}
+			
+			assertThat(!thrown).isEqualTo(true);
+			assertThat(result).isEqualTo("Your Weight is invalid! Please set your weight first");
 		}  
 		
 		@Test
@@ -356,6 +423,20 @@ public class KitchenSinkTester {
 			assertThat(!thrown).isEqualTo(true);
 			assertThat(result).isEqualTo("Your Sex is invalid! Please try again using the info function.");
 		} 
+		
+		@Test
+		public void testSexTypeInvalidUser() throws Exception {
+			boolean thrown = false;
+			String result = null;
+			try {
+				result = this.sqldatabaseEngine.sex("M", "user_not_exist");
+			} catch (Exception e) {
+				thrown = true;
+			}
+			
+			assertThat(!thrown).isEqualTo(true);
+			assertThat(result).isEqualTo(null);
+		} 
 		//-----------Age
 		@Test
 		public void testAgeInputZero() throws Exception {
@@ -395,6 +476,20 @@ public class KitchenSinkTester {
 			
 			assertThat(!thrown).isEqualTo(true);
 			assertThat(result).isEqualTo("Data updated! Your age has been set to 50");
+		}
+		
+		@Test
+		public void testAgeValidInputNotExistingUser() throws Exception {
+			boolean thrown = false;
+			String result = null;
+			try {
+				result = this.sqldatabaseEngine.age("50", "not_exist_user");
+			} catch (Exception e) {
+				thrown = true;
+			}
+			
+			assertThat(!thrown).isEqualTo(true);
+			assertThat(result).isEqualTo(null);
 		}
 		
 		@Test
@@ -468,6 +563,20 @@ public class KitchenSinkTester {
 		}
 		
 		@Test
+		public void testHeightValidInputNotExistingUser() throws Exception {
+			boolean thrown = false;
+			String result = null;
+			try {
+				result = this.sqldatabaseEngine.height("50", "not_exist_user");
+			} catch (Exception e) {
+				thrown = true;
+			}
+			
+			assertThat(!thrown).isEqualTo(true);
+			assertThat(result).isEqualTo(null);
+		}
+		
+		@Test
 		public void testHeightInputBoundary() throws Exception {
 			boolean thrown = false;
 			String result = null;
@@ -536,6 +645,20 @@ public class KitchenSinkTester {
 			
 			assertThat(!thrown).isEqualTo(true);
 			assertThat(result).isEqualTo("Data updated! Your weight has been set to 50kg");
+		}
+		
+		@Test
+		public void testWeightValidInputNotExistingUser() throws Exception {
+			boolean thrown = false;
+			String result = null;
+			try {
+				result = this.sqldatabaseEngine.weight("50", "not_exist_user");
+			} catch (Exception e) {
+				thrown = true;
+			}
+			
+			assertThat(!thrown).isEqualTo(true);
+			assertThat(result).isEqualTo(null);
 		}
 		
 		@Test
@@ -613,7 +736,36 @@ public class KitchenSinkTester {
 		assertThat(result).isEqualTo("Data updated!");
 	}
 	
-
+		@Test
+	public void testEnergyInvalidInput2() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = this.sqldatabaseEngine.energy("energy"+"\n"+"1"+"a","testID");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		
+		assertThat(!thrown).isEqualTo(false);
+	} 	
+	
+	*/
+//-------------------Order
+	@Test
+	public void testOrderNewUser() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			this.sqldatabaseEngine.InitiallizeTestData("update user_info set state = 0 where user_id = 'newuser'");
+			result = this.sqldatabaseEngine.order("newuser","1");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result.contains("Meal menu")).isEqualTo(true);
+	}
+	
 	@Test
 	public void testOrderCorrectOutput1() throws Exception {
 		boolean thrown = false;
@@ -625,9 +777,9 @@ public class KitchenSinkTester {
 		}
 		
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo("Meal menu"
-				+ "\n1.Breakfast \n2.Lunch \n3.Dinner \n4. Dessert\n");
+		assertThat(result.contains("Meal menu")).isEqualTo(true);
 	}
+	
 	
 	@Test
 	public void testOrderCorrectOutput2() throws Exception {
@@ -641,7 +793,7 @@ public class KitchenSinkTester {
 		}
 		
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo("What type of food do you like to choose?\n1.Vegetarian\n2.Chicken\n3.Pork\n4.Beef\n5.Don't care");
+		assertThat(result.contains("What type of food do you like to choose")).isEqualTo(true);
 	}
 	
 	@Test
@@ -656,7 +808,7 @@ public class KitchenSinkTester {
 		}
 		
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo("What type of food do you like to choose?\n1.Vegetarian\n2.Chicken\n3.Pork\n4.Beef\n5.Don't care");
+		assertThat(result.contains("What type of food do you like to choose")).isEqualTo(true);
 	}
 	
 	@Test
@@ -671,7 +823,7 @@ public class KitchenSinkTester {
 		}
 		
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo("What type of food do you like to choose?\n1.Vegetarian\n2.Chicken\n3.Pork\n4.Beef\n5.Don't care");
+		assertThat(result.contains("What type of food do you like to choose")).isEqualTo(true);
 	}
 	
 	@Test
@@ -686,7 +838,7 @@ public class KitchenSinkTester {
 		}
 		
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo("Are you vegetarian?\n1.yes\n2.no");
+		assertThat(result.contains("Are you vegetarian")).isEqualTo(true);
 	}
 	
 	@Test
@@ -701,8 +853,7 @@ public class KitchenSinkTester {
 		}
 		
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo("Meal menu"
-				+ "\n1.Breakfast \n2.Lunch \n3.Dinner \n4. Dessert\n");
+		assertThat(result.contains("Meal menu")).isEqualTo(true);
 	}
 
 	@Test
@@ -718,7 +869,7 @@ public class KitchenSinkTester {
 		}
 		
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo("What type of food do you like to choose?\n1.Vegetarian\n2.Chicken\n3.Pork\n4.Beef\n5.Don't care");
+		assertThat(result.contains("What type of food do you like to choose")).isEqualTo(true);
 	}
 
 	@Test
@@ -734,20 +885,9 @@ public class KitchenSinkTester {
 		}
 		
 		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).isEqualTo("Are you vegetarian?\n1.yes\n2.no");
+		assertThat(result.contains("Are you vegetarian")).isEqualTo(true);
 	}
 	
-	@Test
-	public void testEnergyInvalidInput2() throws Exception {
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = this.sqldatabaseEngine.energy("energy"+"\n"+"1"+"a","testID");
-		} catch (Exception e) {
-			thrown = true;
-		}
-		
-		assertThat(!thrown).isEqualTo(false);
-	} */	
+
 
 }
